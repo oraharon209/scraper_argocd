@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "scraping-app.fullname" . }}-backend
+  labels:
+    {{- include "scraping-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: backend
+    {{- include "scraping-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: backend
+      {{- include "scraping-app.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.backend.name }}
+          image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.backend.imagePullPolicy | quote }}
+          env:
+            - name: SASL_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: {{ .Values.env.kafkaSASL.key }}
+                  name: {{ .Values.env.kafkaSASL.name }}
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MONGO_USER
+              value: {{ quote .Values.env.mongoUser }}
+            - name: MONGO_HOST
+              value: {{ quote .Values.env.mongoHost }}
+            - name: MONGO_PORT
+              value: {{ quote .Values.env.mongoPort }}
+            - name: MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: {{ .Values.env.mongoPass.key }}
+                  name: {{ .Values.env.mongoPass.name }}
+            - name: REPO_NAME
+              value: {{ quote .Values.env.repoName }}
+            - name: REPO_URL
+              value: {{ quote .Values.env.repoUrl }}
+            - name: DAILY_CHART
+              value: {{ quote .Values.env.dailyChart }}
+            - name: LIVE_CHART
+              value: {{ quote .Values.env.liveChart }}
+            - name: KUBERNETES_CLUSTER_DOMAIN
+              value: {{ quote .Values.kubernetesClusterDomain }}
+          envFrom:
+            - configMapRef:
+                name: app-env
+          resources: {}
+

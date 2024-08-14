@@ -1,0 +1,4 @@
+Flask==3.0.0
+kafka-python==2.0.2
+kubernetes==30.1.0
+pymongo==4.7.2

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "scraping-app.fullname" . }}-frontend
+  labels:
+    {{- include "scraping-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: frontend
+    {{- include "scraping-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: frontend
+      {{- include "scraping-app.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.frontend.name }}
+          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.frontend.imagePullPolicy | quote }}
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SASL_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: {{ .Values.env.kafkaSASL.key }}
+                  name: {{ .Values.env.kafkaSASL.name }}
+            - name: KUBERNETES_CLUSTER_DOMAIN
+              value: {{ .Values.kubernetesClusterDomain | quote }}
+          envFrom:
+            - configMapRef:
+                name: app-env
+          ports:
+            - containerPort: {{ .Values.frontend.targetPort }}
+          resources: {}
+

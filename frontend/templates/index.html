@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .game {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .team {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .time {
+            color: #666;
+        }
+        .live {
+            background-color: #ffc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .score {
+            font-weight: bold;
+        }
+        .submit-button {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Favorite Team</h1>
+        <form action="{{ url_for('fav_team') }}" method="post">
+            <select name="team">
+            {% for team in teams %}
+            <option value="{{ team }}">{{ team }}</option>
+            {% endfor %}
+            </select>
+            <button type="submit" class="submit-button">Submit Favorite Team</button>
+        </form>
+
+        <h1>Upcoming Games</h1>
+        {% for message in messages %}
+        <div class="game">
+            <div class="team">{{ message.home_team }} vs {{ message.away_team }}</div>
+            <div class="time">Time: {{ message.time }}</div>
+        </div>
+        {% endfor %}
+
+        <h1>Live Games</h1>
+        {% for message in live_messages %}
+        <div class="live">
+            <div class="team">{{ message.home_team }} vs {{ message.away_team }}</div>
+            <div class="score">Score: {{ message.home_score }} - {{ message.away_score }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

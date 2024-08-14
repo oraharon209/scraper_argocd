@@ -1,0 +1,55 @@
+appEnv:
+  kafkaProducers:
+    - kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local
+    - kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local
+    - kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local
+  kafkaConsumer: kafka.kafka.svc.cluster.local:9092
+  kafkaPort: "9092"
+  saslUser: user1
+
+env:
+  mongoHost: mongo-mongodb.mongodb.svc.cluster.local
+  mongoPort: "27017"
+  mongoUser: root
+  mongoPass:
+    key: mongodb-root-password
+    name: mongo-mongodb
+  kafkaSASL:
+    key: client-passwords
+    name: kafka-user-passwords
+  repoName: "argotest"
+  repoUrl: "https://github.com/oraharon209/argotest/raw/main/charts/jobs/"
+  dailyChart: "daily-job-0.1.0.tgz"
+  liveChart: "live-job-0.1.0.tgz"
+
+backend:
+  name: backend
+  image:
+    repository: oraharon/backend_scraper
+    tag: 2
+  imagePullPolicy: Always
+  replicas: 1
+
+frontend:
+  name: frontend
+  image:
+    repository: oraharon/frontend_scraper
+    tag: 2
+  targetPort: 5000
+  imagePullPolicy: Always
+  replicas: 1
+
+service:
+  name: http
+  port: 5000
+  protocol: TCP
+  targetPort: 5000
+  type: ClusterIP
+
+ingress:
+  className: nginx
+  host: "example.com"
+  path: /
+  pathType: Prefix
+
+kubernetesClusterDomain: cluster.local

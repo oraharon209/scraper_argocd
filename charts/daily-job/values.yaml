@@ -1,0 +1,13 @@
+daily:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 20
+  image:
+    repository: oraharon/daily_scraper
+    tag: 2
+
+env:
+  kafkaSASL:
+    key: client-passwords
+    name: kafka-user-passwords
+
+kubernetesClusterDomain: cluster.local

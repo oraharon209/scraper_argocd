@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "scraping-app.fullname" . }}-ingress
+  labels:
+    app: {{ .Values.frontend.name }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Release.Namespace }}.{{ .Values.ingress.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ include "scraping-app.fullname" . }}-service
+                port:
+                  number: {{ .Values.service.port }}
+            path: /
+            pathType: Prefix

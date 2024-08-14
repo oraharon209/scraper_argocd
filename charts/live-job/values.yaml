@@ -1,0 +1,14 @@
+live:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 20
+  image:
+    repository: oraharon/live_scraper
+    tag: 2
+
+env:
+  discordUrl: https://discord.com/api/webhooks/1252882210101526539/FZGB42Xd0SCqmzd_OkvIxBR7UKRpzVlW7Ysk7bEi6dE8GmfilK9dF5-VdblpyNSxMd6v
+  kafkaSASL:
+    key: client-passwords
+    name: kafka-user-passwords
+
+kubernetesClusterDomain: cluster.local

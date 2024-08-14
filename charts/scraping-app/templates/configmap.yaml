@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-env
+  labels:
+  {{- include "scraping-app.labels" . | nindent 4 }}
+data:
+  KAFKA_CONSUMER: {{ .Values.appEnv.kafkaConsumer | quote }}
+  KAFKA_PRODUCERS: |
+    {{- range $index, $producer := .Values.appEnv.kafkaProducers }}
+      {{ $producer }}:{{ $.Values.appEnv.kafkaPort }}
+      {{- if lt $index (sub (len $.Values.appEnv.kafkaProducers) 1) }},{{ end }}
+    {{- end }}
+  KAFKA_PORT: {{ .Values.appEnv.kafkaPort | quote }}
+  SASL_USER: {{ .Values.appEnv.saslUser | quote }}

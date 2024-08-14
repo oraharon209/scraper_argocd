@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: or-scraper
+  namespace: argocd
+spec:
+  destination:
+    namespace: or
+    server: https://kubernetes.default.svc
+  source:
+    path: charts/scraping-app 
+    repoURL: https://github.com/oraharon209/argotest
+    targetRevision: HEAD
+  project: scraper-app
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

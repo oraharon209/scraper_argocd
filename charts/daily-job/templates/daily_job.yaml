@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "daily-job.fullname" . }}-daily
+  labels:
+    {{- include "daily-job.labels" . | nindent 4 }}
+spec:
+  ttlSecondsAfterFinished: {{ .Values.daily.ttlSecondsAfterFinished }}
+  backoffLimit: {{ .Values.daily.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        app: daily
+    spec:
+      containers:
+        - name: my-container
+          image: {{ .Values.daily.image.repository }}:{{ .Values.daily.image.tag | default .Chart.AppVersion }}
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SASL_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: {{ .Values.env.kafkaSASL.key }}
+                  name: {{ .Values.env.kafkaSASL.name }}
+            - name: KUBERNETES_CLUSTER_DOMAIN
+              value: {{ quote .Values.kubernetesClusterDomain }}
+          envFrom:
+            - configMapRef:
+                name: app-env
+          resources: {}
+      restartPolicy: Never
