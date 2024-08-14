@@ -56,8 +56,10 @@ Before you begin, ensure you have met the following requirements:
 ## Usage
 
 Once deployed, the application will start scraping data as defined in your scraping configuration. You can monitor and manage the application via the ArgoCD web interface.
+You can also use loki to gather logs.
 
 ## Configuration
 
 - **Helm Values**: Customize your deployment by modifying the values in the `values.yaml` file within the Helm chart directory.
 - **Environment Variables**: You can set environment variables for the scraper by updating the Helm chart or Dockerfile as needed.
+- **Logging**: You can also use Loki to gather and analyze logs from your application. This can be set up by integrating Loki with your Kubernetes cluster via `/loki/loki.yaml`
